@@ -6,12 +6,12 @@
 int main() {
     while (1 > 0) {
         if (verification() == 1) {
-            sleep_ms(100000);
+            usleep(100000000); // 100 seconds in microseconds
         } else {
             printf("No rabbit found! What can we do...");
             EnvVars env = load_env();
             send_message(env);
-            sleep_ms(100000);
+            usleep(100000000); // 100 seconds in microseconds
         }
     }
 }

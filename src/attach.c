@@ -9,7 +9,7 @@ int verification(void) {
     char path[1035];
     int found_rabbit = 0;
     
-    processes = _popen("docker ps", "r");
+    processes = popen("docker ps", "r");
     if (processes == NULL) {
         printf("Failed to run command\n");
         return -1;
@@ -29,7 +29,7 @@ int verification(void) {
         }
     }
 
-    _pclose(processes);
+    pclose(processes);
     
     if (!found_rabbit) {
         printf("No RabbitMQ containers found running!\n");

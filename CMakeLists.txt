@@ -8,10 +8,16 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # Find required packages
 find_package(CURL REQUIRED)
 
-# Add definitions for Windows
+# Platform-specific settings
 if(WIN32)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_WIN32)
+    # Windows-specific libraries
+    set(PLATFORM_LIBS ws2_32)
+else()
+    # Linux-specific libraries
+    set(PLATFORM_LIBS pthread rt)
+    add_definitions(-D_POSIX_C_SOURCE=200809L)
 endif()
 
 # Include directories
@@ -38,6 +44,7 @@ add_executable(notifica-rabbit
 target_link_libraries(notifica-rabbit
     dotenv
     ${CURL_LIBRARIES}
+    ${PLATFORM_LIBS}
 )
 
 # Set output directory
