@@ -10,7 +10,7 @@ i32 main() {
     });
 
     // Files to compile
-    AddFile(executable, "./src/main.c");
+    AddFile(executable, "./src/*.c");
 
     // Compiles all files parallely with samurai
     InstallExecutable(executable);
