@@ -45,9 +45,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Add compile options
 if(MSVC)
-    target_compile_options(notifica-rabbit PRIVATE /W4)
-    target_compile_options(dotenv PRIVATE /W4)
+    target_compile_options(notifica-rabbit PRIVATE /W4 /Zi)
+    target_compile_options(dotenv PRIVATE /W4 /Zi)
+    set(CMAKE_C_FLAGS_DEBUG "/Od /Zi /RTC1")
 else()
-    target_compile_options(notifica-rabbit PRIVATE -Wall -Wextra)
-    target_compile_options(dotenv PRIVATE -Wall -Wextra)
-endif() 
+    target_compile_options(notifica-rabbit PRIVATE -Wall -Wextra -g)
+    target_compile_options(dotenv PRIVATE -Wall -Wextra -g)
+    set(CMAKE_C_FLAGS_DEBUG "-O0 -g -fno-omit-frame-pointer")
+endif()
+
+# Enable debug info
+set(CMAKE_BUILD_TYPE Debug) 
