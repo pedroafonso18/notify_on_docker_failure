@@ -11,6 +11,8 @@ i32 main() {
 
     // Files to compile
     AddFile(executable, "./src/*.c");
+    AddIncludePaths(executable, "C:/msys64/mingw64/include");
+    AddLibraryPaths(executable, "C:/msys64/mingw64/lib");
 
     // Compiles all files parallely with samurai
     InstallExecutable(executable);
