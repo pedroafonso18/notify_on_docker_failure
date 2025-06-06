@@ -1,12 +1,52 @@
 #include "api_request.h"
 #include <string.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <netdb.h>
 
-int send_message(EnvVars vars) {
+static char* get_local_ip() {
+    static char ip[INET_ADDRSTRLEN];
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0) {
+        return "unknown";
+    }
+
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(53);
+    addr.sin_addr.s_addr = inet_addr("8.8.8.8");
+
+    if (connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+        close(sock);
+        return "unknown";
+    }
+
+    struct sockaddr_in local_addr;
+    socklen_t len = sizeof(local_addr);
+    if (getsockname(sock, (struct sockaddr*)&local_addr, &len) < 0) {
+        close(sock);
+        return "unknown";
+    }
+
+    close(sock);
+    inet_ntop(AF_INET, &local_addr.sin_addr, ip, INET_ADDRSTRLEN);
+    return ip;
+}
+
+int send_message(EnvVars vars, const char* container_name) {
     CURL *curl = curl_easy_init();
     if (curl) {
         CURLcode res;
         struct curl_slist *headers = NULL;
-        const char *data = "{\"channel\": \"#atualizacoes-qualidade\", \"text\": \"RABBITMQ PARADO @pedro.afonso\"}";
+        char data[512];
+        const char* local_ip = get_local_ip();
+        
+        snprintf(data, sizeof(data), 
+                "{\"channel\": \"#atualizacoes-containers\", \"text\": \"Container %s PARADO @pedro.afonso (IP: %s)\"}", 
+                container_name, local_ip);
         
         char auth_header[100];
         char user_header[100];
