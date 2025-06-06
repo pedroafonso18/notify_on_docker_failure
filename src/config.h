@@ -1,12 +1,20 @@
 #ifndef CONFIG_H
 #define CONFIG_H
-#include "../include/dotenv.h"
+
+#include <stdio.h>
 
 typedef struct {
-    const char* xauth;
-    const char* xuser;
+    char* xauth;
+    char* xuser;
 } EnvVars;
 
-EnvVars load_env();
+typedef struct {
+    char** processes;
+    int process_count;
+} ConfigData;
+
+EnvVars load_env(void);
+void* get_config(void);
+void free_config(void* config);
 
 #endif

@@ -1,0 +1,3 @@
+[list]
+enabled = true
+processes = ["dashboard", "consultas_noturnas", "contracheque-automatico", "disparador-indicados","tratamento-huggy","dados_storm"]

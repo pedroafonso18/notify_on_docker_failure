@@ -10,7 +10,11 @@ i32 main() {
     });
 
     // Files to compile
-    AddFile(executable, "./src/*.c");
+    AddFile(executable, "./src/main.c");
+    AddFile(executable, "./src/api_request.c");
+    AddFile(executable, "./src/attach.c");
+    AddFile(executable, "./src/config.c");
+
     AddIncludePaths(executable, "C:/msys64/mingw64/include");
     AddLibraryPaths(executable, "C:/msys64/mingw64/lib");
 
