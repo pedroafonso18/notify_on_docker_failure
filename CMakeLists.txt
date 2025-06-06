@@ -27,9 +27,14 @@ include_directories(
     ${CURL_INCLUDE_DIRS}
 )
 
-# Add dotenv library with specific compile options
+# Add dotenv library
 add_library(dotenv STATIC
     include/dotenv.c
+)
+
+# Add TOML library
+add_library(toml STATIC
+    include/toml.c
 )
 
 # Add executable
@@ -43,6 +48,7 @@ add_executable(notifica-rabbit
 # Link libraries
 target_link_libraries(notifica-rabbit
     dotenv
+    toml
     ${CURL_LIBRARIES}
     ${PLATFORM_LIBS}
 )
@@ -54,10 +60,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 if(MSVC)
     target_compile_options(notifica-rabbit PRIVATE /W4 /Zi)
     target_compile_options(dotenv PRIVATE /W4 /Zi)
+    target_compile_options(toml PRIVATE /W4 /Zi)
     set(CMAKE_C_FLAGS_DEBUG "/Od /Zi /RTC1")
 else()
     target_compile_options(notifica-rabbit PRIVATE -Wall -Wextra -g)
     target_compile_options(dotenv PRIVATE -Wall -Wextra -g)
+    target_compile_options(toml PRIVATE -Wall -Wextra -g)
     set(CMAKE_C_FLAGS_DEBUG "-O0 -g -fno-omit-frame-pointer")
 endif()
 

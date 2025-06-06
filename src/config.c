@@ -1,6 +1,9 @@
 #include "config.h"
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include "../include/toml.h"
+#include "../include/dotenv.h"
 
 EnvVars load_env() {
     if (env_load("../.env", false) != 0) {
@@ -14,11 +17,6 @@ EnvVars load_env() {
 
     return vars;
 }
-
-typedef struct {
-    char** processes;
-    int process_count;
-} ConfigData;
 
 void* get_config() {
     FILE* fp;

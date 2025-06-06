@@ -2,6 +2,7 @@
 #include "api_request.h"
 #include "config.h"
 #include <unistd.h>
+#include <time.h>
 
 int main() {
     while (1) {
@@ -9,24 +10,20 @@ int main() {
         
         if (status != NULL) {
             ConfigData* cfg = get_config();
-            int any_missing = 0;
             
             for (int i = 0; i < cfg->process_count; i++) {
                 if (!status[i].found) {
-                    any_missing = 1;
                     EnvVars env = load_env();
-                    char message[256];
-                    snprintf(message, sizeof(message), "Container not found: %s", status[i].process_name);
-                    send_message(env, message);
+                    send_message(env);
                 }
             }
             
             free_process_status(status);
             free_config(cfg);
             
-            usleep(100000000);
+            sleep(100);
         } else {
-            usleep(5000000);
+            sleep(5);
         }
     }
     

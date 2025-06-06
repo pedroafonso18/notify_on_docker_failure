@@ -1,9 +1,7 @@
 #include "attach.h"
-
-typedef struct {
-    int found;
-    char* process_name;
-} ProcessStatus;
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 ProcessStatus* verification(void) {
     FILE* processes;
@@ -23,7 +21,6 @@ ProcessStatus* verification(void) {
         return NULL;
     }
 
-    // Allocate array to track status of each process
     ProcessStatus* status = malloc(sizeof(ProcessStatus) * cfg->process_count);
     for (int i = 0; i < cfg->process_count; i++) {
         status[i].found = 0;
@@ -38,7 +35,6 @@ ProcessStatus* verification(void) {
             lower_path[i] = tolower(lower_path[i]);
         }
         
-        // Check each process against the current line
         for(int i = 0; i < cfg->process_count; i++) {
             if (strstr(lower_path, cfg->processes[i]) != NULL) {
                 status[i].found = 1;
@@ -48,7 +44,6 @@ ProcessStatus* verification(void) {
 
     pclose(processes);
     
-    // Print status for each process
     int any_missing = 0;
     for(int i = 0; i < cfg->process_count; i++) {
         if (!status[i].found) {
@@ -61,7 +56,6 @@ ProcessStatus* verification(void) {
         printf("All containers are running!\n");
     }
 
-    // Don't free cfg here as we're still using its process names
     return status;
 }
 
