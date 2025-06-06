@@ -1,41 +1,72 @@
 #include "attach.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
-int verification(void) {
+typedef struct {
+    int found;
+    char* process_name;
+} ProcessStatus;
+
+ProcessStatus* verification(void) {
     FILE* processes;
     char path[1035];
-    int found_rabbit = 0;
-    
+    ConfigData* cfg = get_config();
+
+    if (!cfg->enabled) {
+        printf("Verification is not enabled, waiting...\n");
+        free_config(cfg);
+        return NULL;
+    }
+
     processes = popen("docker ps", "r");
     if (processes == NULL) {
         printf("Failed to run command\n");
-        return -1;
+        free_config(cfg);
+        return NULL;
     }
 
-    printf("Checking for RabbitMQ containers...\n");
+    // Allocate array to track status of each process
+    ProcessStatus* status = malloc(sizeof(ProcessStatus) * cfg->process_count);
+    for (int i = 0; i < cfg->process_count; i++) {
+        status[i].found = 0;
+        status[i].process_name = cfg->processes[i];
+    }
+
+    printf("Checking for containers...\n");
     while (fgets(path, sizeof(path) - 1, processes) != NULL) {
-        printf("%s", path);
         char lower_path[1035];
         strcpy(lower_path, path);
         for(int i = 0; lower_path[i]; i++) {
             lower_path[i] = tolower(lower_path[i]);
         }
         
-        if (strstr(lower_path, "rabbit") != NULL) {
-            found_rabbit = 1;
+        // Check each process against the current line
+        for(int i = 0; i < cfg->process_count; i++) {
+            if (strstr(lower_path, cfg->processes[i]) != NULL) {
+                status[i].found = 1;
+            }
         }
     }
 
     pclose(processes);
     
-    if (!found_rabbit) {
-        printf("No RabbitMQ containers found running!\n");
-    } else {
-        printf("Found RabbitMQ container(s)\n");
+    // Print status for each process
+    int any_missing = 0;
+    for(int i = 0; i < cfg->process_count; i++) {
+        if (!status[i].found) {
+            printf("Container not found: %s\n", status[i].process_name);
+            any_missing = 1;
+        }
     }
     
-    return found_rabbit;
+    if (!any_missing) {
+        printf("All containers are running!\n");
+    }
+
+    // Don't free cfg here as we're still using its process names
+    return status;
+}
+
+void free_process_status(ProcessStatus* status) {
+    if (status) {
+        free(status);
+    }
 }

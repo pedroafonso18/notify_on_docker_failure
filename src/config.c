@@ -44,6 +44,12 @@ void* get_config() {
         exit(1);
     }
 
+    toml_datum_t enabled = toml_bool_in(list_table, "enabled");
+    if (!enabled.ok) {
+        fprintf(stderr, "ERROR: Missing \"enabled\" in toml file.");
+        exit(1);
+    }
+
     toml_array_t* processes_array = toml_array_in(list_table, "processes");
     if (!processes_array) {
         fprintf(stderr, "ERROR: Missing \"processes\" array in the [list] table.");
@@ -55,6 +61,7 @@ void* get_config() {
     ConfigData* config_data = malloc(sizeof(ConfigData));
     config_data->processes = malloc(sizeof(char*) * array_size);
     config_data->process_count = array_size;
+    config_data->enabled = enabled.u.b;
 
     for (int i = 0; i < array_size; i++) {
         toml_datum_t process = toml_string_at(processes_array, i);

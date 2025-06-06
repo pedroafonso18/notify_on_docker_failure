@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct {
     char* xauth;
@@ -10,6 +11,7 @@ typedef struct {
 
 typedef struct {
     char** processes;
+    bool enabled;
     int process_count;
 } ConfigData;
 

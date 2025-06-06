@@ -2,7 +2,18 @@
 #define ATTACH_H
 
 #include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include "config.h"
 
-int verification(void);
+typedef struct {
+    int found;
+    char* process_name;
+} ProcessStatus;
+
+ProcessStatus* verification(void);
+void free_process_status(ProcessStatus* status);
 
 #endif
