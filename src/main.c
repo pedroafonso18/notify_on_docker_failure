@@ -14,7 +14,9 @@ int main() {
             for (int i = 0; i < cfg->process_count; i++) {
                 if (!status[i].found) {
                     EnvVars env = load_env();
-                    send_message(env, status[i].process_name);
+                    if (cfg->send_message) {
+                        send_message(env, status[i].process_name);
+                    }
                 }
             }
             

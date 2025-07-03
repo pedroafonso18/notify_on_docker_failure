@@ -3,6 +3,16 @@
 #include <string.h>
 #include <ctype.h>
 
+int restart_process(ProcessStatus* status) {
+    char* start_string = "docker start " + *status->process_name;  
+    FILE* start = popen(start_string, "r");
+    if (start == NULL) {
+        printf("Failed to run command\n");
+        return -1;
+    }
+    return 1;
+}
+
 ProcessStatus* verification(void) {
     FILE* processes;
     char path[1035];
@@ -48,6 +58,14 @@ ProcessStatus* verification(void) {
     for(int i = 0; i < cfg->process_count; i++) {
         if (!status[i].found) {
             printf("Container not found: %s\n", status[i].process_name);
+            if (cfg->restart) {
+                int rst_status = restart_process(&status[i]);
+                if (rst_status == 1) {
+                    printf("Successfully restarted application!");
+                } else {
+                    printf("Application restart not successfull.");
+                }
+            }
             any_missing = 1;
         }
     }
@@ -64,3 +82,4 @@ void free_process_status(ProcessStatus* status) {
         free(status);
     }
 }
+

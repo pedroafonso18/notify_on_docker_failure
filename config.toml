@@ -1,3 +1,5 @@
 [list]
+restart = true
 enabled = true
-processes = ["dashboard", "consultas_noturnas", "contracheque-automatico", "disparador-indicados","tratamento_huggy","dados_storm"]
+send_message = false
+processes = ["laradock-portainer-1", "laradock-mysql-1", "laradock-nginx-1", "laradock-php-fpm-1", "laradock-workspace-1", "laradock-phpmyadmin-1","laradock-docker-in-docker-1"]

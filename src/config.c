@@ -48,6 +48,17 @@ void* get_config() {
         exit(1);
     }
 
+    toml_datum_t restart = toml_bool_in(list_table, "restart");
+    if (!restart.ok) {
+        fprintf(stderr, "ERROR: Missing \"restart\" in toml file.");
+    }
+
+    toml_datum_t send_message = toml_bool_in(list_table, "send_message");
+    if (!restart.ok) {
+        fprintf(stderr, "ERROR: Missing \"send_message\" in toml file.");
+    }
+
+
     toml_array_t* processes_array = toml_array_in(list_table, "processes");
     if (!processes_array) {
         fprintf(stderr, "ERROR: Missing \"processes\" array in the [list] table.");
@@ -60,6 +71,8 @@ void* get_config() {
     config_data->processes = malloc(sizeof(char*) * array_size);
     config_data->process_count = array_size;
     config_data->enabled = enabled.u.b;
+    config_data->restart = restart.u.b;
+    config_data->send_message = send_message.u.b;
 
     for (int i = 0; i < array_size; i++) {
         toml_datum_t process = toml_string_at(processes_array, i);

@@ -12,6 +12,8 @@ typedef struct {
 typedef struct {
     char** processes;
     bool enabled;
+    bool restart;
+    bool send_message;
     int process_count;
 } ConfigData;
 
