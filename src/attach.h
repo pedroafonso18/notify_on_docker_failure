@@ -15,6 +15,6 @@ typedef struct {
 
 ProcessStatus* verification(void);
 void free_process_status(ProcessStatus* status);
-void restart_process(ProcessStatus* status);
+int restart_process(ProcessStatus* status);
 
 #endif
